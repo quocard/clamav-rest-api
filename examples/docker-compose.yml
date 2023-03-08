@@ -7,7 +7,6 @@ services:
       - clam-net
   api:
     build: ../
-    image: clamav-rest-api
     restart: unless-stopped
     # depends_on is ignored in some situations (have a look at the discussion in this PR: https://github.com/benzino77/clamav-rest-api/pull/23)
     # to fix such situation there is wait-for-it script available inside the CRA docker image (https://github.com/vishnubob/wait-for-it)
@@ -21,7 +20,7 @@ services:
       - CLAMD_IP=clamd
       - APP_FORM_KEY=FILES
       - APP_PORT=3000
-      - APP_MAX_FILE_SIZE=6291456 # 6MiB
+      - APP_MAX_FILE_SIZE=10485760 # 10MiB
     ports:
       - '8080:3000'
     networks:
