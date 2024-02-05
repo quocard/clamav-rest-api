@@ -21,6 +21,18 @@ router.route('/').post(async (req, res, next) => {
     ? req.files[process.env.APP_FORM_KEY]
     : [req.files[process.env.APP_FORM_KEY]];
 
+  // file size check
+  for (const f of toScan) {
+    if (f.size > process.env.APP_MAX_FILE_SIZE) {
+      return res.status(413).json({
+        success: false,
+        data: {
+          error: `File size limit exceeded. Max size of uploaded file is: ${process.env.APP_MAX_FILE_SIZE / 1024} KB`,
+        },
+      });
+    }
+  }
+
   let resultArray = [];
   for (const f of toScan) {
     try {
