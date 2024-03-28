@@ -1,3 +1,4 @@
+const DEFAULT_MAX_FILE_SIZE = 1024 * 1024 * 25; // 25 MB
 const avConfig = {
   debugMode: false,
   preference: 'clamdscan',
@@ -12,6 +13,25 @@ const avConfig = {
 
 const fuConfig = {
   useTempFiles: false,
+  limits: {
+    fileSize: parseInt(process.env.APP_MAX_FILE_SIZE || DEFAULT_MAX_FILE_SIZE),
+  },
+  limitHandler: (req, res) => {
+    res.writeHead(413, {
+      Connection: 'close',
+      'Content-Type': 'application/json',
+    });
+    res.end(
+      JSON.stringify({
+        success: false,
+        data: {
+          error: `File size limit exceeded. Max size of uploaded file is: ${
+            process.env.APP_MAX_FILE_SIZE || DEFAULT_MAX_FILE_SIZE / 1024
+          } KB`,
+        },
+      })
+    );
+  },
 };
 
 module.exports = {
